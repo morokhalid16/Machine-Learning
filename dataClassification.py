@@ -1,5 +1,5 @@
 def read_data():
-    pass
+    return"data"
 
 def clean_data():
     pass

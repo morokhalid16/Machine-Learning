@@ -43,7 +43,6 @@ def clean_data(data, col_target):
 
     return X, Y
 
-
 def visualize_data():
     pass
 

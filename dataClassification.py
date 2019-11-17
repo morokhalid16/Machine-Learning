@@ -1,29 +1,47 @@
 import pandas as pd
+import numpy as np
 from sklearn import preprocessing
 
 def read_data(data_title, col_array):
 
     # import the data
-    data = pd.read_csv(data_title)
+    data = pd.read_csv(data_title, sep=',', skipinitialspace=True)
 
-    # eliminate the columns that are not useful
-    my_data = data.drop(col_array, axis=1)
+    # eliminate the columns that are not useful (categorical columns)
+    my_data = data.drop(columns=col_array, axis=1)
 
     # transform the data into a numpy array
-    x_data = my_data.values
+    # x_data = my_data.values
 
-    return x_data
+    return my_data
 
-def clean_data(data):
+def clean_data(data, col_target):
 
-    # add values for the entries that are zero
+    # fix values for the entries that are ?
+    data.replace(to_replace='?', value=np.nan)
 
-    # scale
+    # fill out the numerical columns with the mean value
+    data.fillna(data.mean())
 
-    std_scale = preprocessing.StandardScaler().fit(data)
-    x_scaled = std_scale.transform(data)
+    # transform non-numeric columns into numerical columns
+    for column in data.columns:
+        if data[column].dtype == np.number:
+            continue
+        data[column] = preprocessing.LabelEncoder().fit_transform(data[column])
 
-    #center
+    # split the data removing the column that represents the target (ex: in chronic kidney disease it's classification)
+    X = data.drop(col_target, axis=1)
+
+    # target
+    Y = data[col_target]
+
+    # Feature scaling
+    x_scaler = preprocessing.MinMaxScaler()
+    x_scaler.fit(X)
+    column_names = X.columns
+    X[column_names] = x_scaler.transform(X)
+
+    return X, Y
 
 
 def visualize_data():

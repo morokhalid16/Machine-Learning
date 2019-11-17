@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from sklearn import preprocessing
+import seaborn as sns
 
 
 def read_data(data_title, col_array):
@@ -28,9 +29,11 @@ def col_target_def(flag):
     If flag is false, we are working with data_banknote_authentication.txt file"""
 
     if flag:
-        col_target = ["classification"]
+        col_target = ["rbc", "pc", "pcc", "ba", "dm", "cad", "appet", "pe", "ane", "classification"]
     else:
         col_target = None
+
+    return col_target
 
 
 def clean_data(data, col_target):
@@ -80,9 +83,10 @@ def clean_data(data, col_target):
         return X, None
 
 
-def visualize_data():
-    """TODO: visualize the data processed"""
-    pass
+def visualize_data(data):
+    """Visualizes in a Boxplot the data once cleaned"""
+    data.describe()
+    sns.boxplot(data = data)
 
 
 def pca():

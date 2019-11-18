@@ -4,14 +4,14 @@ from sklearn import preprocessing
 import seaborn as sns
 
 
-def read_data(data_path):
+def read_data(data_path): # for windows we need to put r before data_path 
     """TODO: review if we delete here the column or better all in the clean_data()"""
     """Reads the data of the file and returns it
     data_title: path and name of the file desired to read
     col_array: columns of the array that can be deleted (in general, the first column)"""
 
     # import the data
-    my_data = pd.read_csv(rdata_path, sep=',', skipinitialspace=True) # for windows we need to put r before data_path
+    my_data = pd.read_csv(data_path, sep=',', skipinitialspace=True) 
 
     
   

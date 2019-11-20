@@ -10,7 +10,7 @@ from sklearn.model_selection import train_test_split
 def split(flag,cleaned_data,test_proportion=0.25):
     """ If flag is true, we are working with kidney_disease.csv file
     If flag is false, we are working with data_banknote_authentication.txt file"""
-    if flag: 
+    if flag=="true": 
         n=len(cleaned_data)
         X=cleaned_data
         Y=cleaned_data["classification"]

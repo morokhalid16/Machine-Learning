@@ -70,7 +70,7 @@ def clean_data(data, col_target):
         column_names = X.columns
         X[column_names] = x_scaler.transform(X)
 
-        return X, Y
+        return   pd.concat([X,Y], axis=1, sort=False) # to return a cleaned data frame with to same columns as the original 
 
     elif col_target is None:
         X = data
@@ -80,7 +80,7 @@ def clean_data(data, col_target):
         column_names = X.columns
         X[column_names] = x_scaler.transform(X)
 
-        return X, None
+        return pd.concat([X,None], axis=1, sort=False)
 
 
 def visualize_data(data):

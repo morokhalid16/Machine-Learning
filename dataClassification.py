@@ -4,22 +4,13 @@ from sklearn import preprocessing
 import seaborn as sns
 
 
-def read_data(data_path): # for windows we need to put r before data_path 
-    """TODO: review if we delete here the column or better all in the clean_data()"""
-    """Reads the data of the file and returns it
-    data_title: path and name of the file desired to read
-    col_array: columns of the array that can be deleted (in general, the first column)"""
-
-    # import the data
-    my_data = pd.read_csv(data_path, sep=',', skipinitialspace=True) 
-
-    
-  
-
-    # transform the data into a numpy array
-    # x_data = my_data.values
-
-    return my_data
+def load_data(flag,path): # use ( for windows ) syntax r"path" 
+    """"If flag is true, we are working with kidney_disease.csv file
+    If flag is false, we are working with data_banknote_authentication.txt file"""
+    if flag=="true" :
+        return pd.read_csv(path)
+    else:
+        return pd.read_csv(path,header=None)# dont add header so we dont lose the first row
 
 
 def col_target_def(flag):
@@ -28,12 +19,12 @@ def col_target_def(flag):
     If flag is true, we are working with kidney_disease.csv file
     If flag is false, we are working with data_banknote_authentication.txt file"""
 
-    if flag:
+    if flag=="true":
         col_target = ["rbc", "pc", "pcc", "ba", "dm", "cad", "appet", "pe", "ane", "classification"]
-    else:
-        col_target = None
+        return col_target
+    return None
 
-    return col_target
+   
 
 
 def clean_data(data, col_target):

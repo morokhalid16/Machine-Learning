@@ -4,14 +4,15 @@ from sklearn import preprocessing
 import seaborn as sns
 
 
-def load_data(flag,path): # use ( for windows ) syntax r"path" 
-    """"If flag is true, we are working with kidney_disease.csv file
-    If flag is false, we are working with data_banknote_authentication.txt file"""
-    if flag=="true" :
-        return pd.read_csv(path)
+def load_data(path, flag=True): # Pastorino & Riera i Marin
+    """"If flag is True, we are working with data_banknote_authentication.txt file
+    If flag is False, we are working with kidney_disease.csv file"""
+    if (flag == True):
+        columns = ["var", "skewness", "curtosis", "entropy", "class"]
+        data = pd.read_csv(path, header=None, names=columns)
     else:
-        return pd.read_csv(path,header=None)# dont add header so we dont lose the first row
-
+        data = pd.read_csv(path)
+    return data
 
 def col_target_def(flag):
     """TODO: decides which columns need to be deleted"""
@@ -24,12 +25,16 @@ def col_target_def(flag):
         return col_target
     return None
 
-   
 
+def clean_data(data, flag):  # Rodriguez
+    if (flag == True):
+        x = data.drop(['class'], axis=1)
+        y = data['class']
+    else:
+        ## gustavo's part of kidney disease
 
-def clean_data(data, col_target):
-    """Cleans the data already read in the read_data() function
-    data: data returned from read_data()
+    """Cleans the data already read in the load_data() function
+    data: data returned from load_data()
     col_target: columns non numerical that must be cleaned"""
 
     # fix values for the entries that are ?
@@ -74,13 +79,22 @@ def clean_data(data, col_target):
         return pd.concat([X,None], axis=1, sort=False)
 
 
-def visualize_data(data):
+def visualize_data(data, column):  # Pastorino & Riera i Marin
     """Visualizes in a Boxplot the data once cleaned"""
-    data.describe()
+    print(data.describe())
     sns.boxplot(data = data)
+    sns.pairplot(data)
+    #column = ["var", "skewness", "curtosis", "entropy"]
+    n = len(column)
+    #vis = np.zeros(n)
+    f, ax = plt.subplots(1, n, figsize=(10,3))
+    for i in range(n):
+        vis = sns.distplot(data[column[i]],bins=10, ax= ax[i])
+        f.savefig('subplot.png')
+    return
 
 
-def pca():
+def pca():  # Moro
     """TODO: """
     pass
 

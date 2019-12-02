@@ -94,10 +94,16 @@ def visualize_data(data, column):  # Pastorino & Riera i Marin
     return
 
 
-def pca():  # Moro
-    """TODO: """
-    pass
+def pca(cleaned_data, n_components):  # Moro
+    std_scale = preprocessing.StandardScaler().fit(cleaned_data)
+    x_scaled = std_scale.transform(cleaned_data)
+    pca = decomposition.PCA(n_components=n_components)
+    pca.fit(x_scaled)
+    dataset = pca.transform(x_scaled)
+    print(pca.explained_variance_ratio_)
+    print(pca.explained_variance_ratio_.sum())
 
+    return dataset
 
 def svm():
     """TODO: """

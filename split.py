@@ -21,3 +21,4 @@ def split(flag,cleaned_data,test_proportion=0.25):
     else:
         X_train, X_test= train_test_split(cleaned_data, test_size=test_proportion)
         return X_train,X_test
+        

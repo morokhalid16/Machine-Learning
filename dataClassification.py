@@ -1,8 +1,16 @@
 import pandas as pd
 import numpy as np
-from sklearn import preprocessing
+from sklearn import preprocessing, decomposition
 import seaborn as sns
-
+import matplotlib.pyplot as plt
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+from sklearn.utils import shuffle
+import keras
+from keras.models import Sequential
+from keras.layers import Dense
+from keras.layers import Activation
 
 def load_data(path, flag=True): # Pastorino & Riera i Marin
     """"If flag is True, we are working with data_banknote_authentication.txt file
@@ -30,8 +38,7 @@ def clean_data(data, flag):  # Rodriguez
     if (flag == True):
         x = data.drop(['class'], axis=1)
         y = data['class']
-    else:
-        ## gustavo's part of kidney disease
+    #else: #gustavo's part of kidney disease
 
     """Cleans the data already read in the load_data() function
     data: data returned from load_data()
@@ -109,11 +116,24 @@ def svm():
     """TODO: """
     pass
 
+"""tested only on banknote authentication for the moment
+works well with following values n_layers = 3, n_neurons_per_layer = [8,8,1], kernel_init = 'uniform', activ = 'relu'"""
 
-def neural_networks():
-    """TODO: """
-    pass
-
+def MLP(n_layers, n_neurons_per_layer, X_train, X_test, test_y, train_y, kernel_init, activ, batch_size, epochs):
+    model = Sequential()
+    model.add(Dense(n_neurons_per_layer[0], kernel_initializer=kernel_init, activation=activ, input_shape=(X_train.shape[1],)))
+    for i in range(1, n_layers-2):
+        model.add(Dense(n_neurons_per_layer[i], kernel_initializer=kernel_init))
+    model.add(Dense(1, kernel_initializer=kernel_init, activation='sigmoid'))
+    model.summary()
+    sgd = keras.optimizers.SGD(lr=0.01)
+    model.compile(loss='binary_crossentropy', optimizer=sgd, metrics=['accuracy'])
+    history = model.fit(X_train, train_y, batch_size, epochs)
+    np.set_printoptions(precision=4, suppress=True)
+    eval_results = model.evaluate(X_test, test_y, verbose=0)
+    print("\nLoss, accuracy on test data: ")
+    print("%0.4f %0.2f%%" % (eval_results[0], eval_results[1]*100))
+    return
 
 def bayes_classifier():
     """TODO: """

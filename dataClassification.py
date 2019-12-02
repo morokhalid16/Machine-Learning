@@ -12,6 +12,7 @@ from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import Activation
 
+
 def load_data(path, flag=True): # Pastorino & Riera i Marin
     """"If flag is True, we are working with data_banknote_authentication.txt file
     If flag is False, we are working with kidney_disease.csv file"""
@@ -21,6 +22,7 @@ def load_data(path, flag=True): # Pastorino & Riera i Marin
     else:
         data = pd.read_csv(path)
     return data
+
 
 def col_target_def(flag):
     """TODO: decides which columns need to be deleted"""
@@ -73,7 +75,7 @@ def clean_data(data, flag):  # Rodriguez
         column_names = X.columns
         X[column_names] = x_scaler.transform(X)
 
-        return   pd.concat([X,Y], axis=1, sort=False) # to return a cleaned data frame with to same columns as the original 
+        return   pd.concat([X,Y], axis=1, sort=False) # to return a cleaned data frame with to same columns as the original
 
     elif col_target is None:
         X = data
@@ -95,13 +97,16 @@ def visualize_data(data, column):  # Pastorino & Riera i Marin
     n = len(column)
     #vis = np.zeros(n)
     f, ax = plt.subplots(1, n, figsize=(10,3))
+
     for i in range(n):
         vis = sns.distplot(data[column[i]],bins=10, ax= ax[i])
         f.savefig('subplot.png')
+
     return
 
 
 def pca(cleaned_data, n_components):  # Moro
+
     std_scale = preprocessing.StandardScaler().fit(cleaned_data)
     x_scaled = std_scale.transform(cleaned_data)
     pca = decomposition.PCA(n_components=n_components)
@@ -112,17 +117,26 @@ def pca(cleaned_data, n_components):  # Moro
 
     return dataset
 
-def svm():
-    """TODO: """
-    pass
+
+def svm(X_train, train_y, X_test, test_y):  # Pastorino & Riera i Marin
+    svclassifier = SVC(kernel='linear')
+    clf = svclassifier.fit(X_train, train_y)
+    y_pred = svclassifier.predict(X_test)
+    print(confusion_matrix(test_y, y_pred))
+    print(classification_report(test_y, y_pred))
+    print(accuracy_score(test_y, y_pred))
+
+    return
+
 
 """tested only on banknote authentication for the moment
 works well with following values n_layers = 3, n_neurons_per_layer = [8,8,1], kernel_init = 'uniform', activ = 'relu'"""
 
+
 def MLP(n_layers, n_neurons_per_layer, X_train, X_test, test_y, train_y, kernel_init, activ, batch_size, epochs):
     model = Sequential()
     model.add(Dense(n_neurons_per_layer[0], kernel_initializer=kernel_init, activation=activ, input_shape=(X_train.shape[1],)))
-    for i in range(1, n_layers-2):
+    for i in range(1, n_layers-1):
         model.add(Dense(n_neurons_per_layer[i], kernel_initializer=kernel_init))
     model.add(Dense(1, kernel_initializer=kernel_init, activation='sigmoid'))
     model.summary()
@@ -133,7 +147,9 @@ def MLP(n_layers, n_neurons_per_layer, X_train, X_test, test_y, train_y, kernel_
     eval_results = model.evaluate(X_test, test_y, verbose=0)
     print("\nLoss, accuracy on test data: ")
     print("%0.4f %0.2f%%" % (eval_results[0], eval_results[1]*100))
+
     return
+
 
 def bayes_classifier():
     """TODO: """

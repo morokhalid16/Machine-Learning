@@ -10,7 +10,6 @@ from sklearn.utils import shuffle
 import keras
 from keras.models import Sequential
 from keras.layers import Dense
-from keras.layers import Activation
 
 
 def load_data(path, flag=True): # Pastorino & Riera i Marin
@@ -130,8 +129,8 @@ def svm(X_train, train_y, X_test, test_y):  # Pastorino & Riera i Marin
 
 
 """tested only on banknote authentication for the moment
-works well with following values n_layers = 3, n_neurons_per_layer = [8,8,1], kernel_init = 'uniform', activ = 'relu'"""
-
+works well with following values n_layers = 3, n_neurons_per_layer = [4,8,1], kernel_init = 'uniform', activ = 'relu'"""
+"""for the chronic kidney disease -> 2 layers, 256 neurons first, 1 neuron last"""
 
 def MLP(n_layers, n_neurons_per_layer, X_train, X_test, test_y, train_y, kernel_init, activ, batch_size, epochs):
     model = Sequential()
@@ -150,27 +149,18 @@ def MLP(n_layers, n_neurons_per_layer, X_train, X_test, test_y, train_y, kernel_
 
     return
 
+"""supposing for now that we have already splitted data in x and target y"""
+def split(x, y,test_proportion): # Moro
+    x, y = shuffle(x, y, random_state=12)
+    X_train, X_test, Y_train, Y_test = train_test_split(x, y, test_size=test_proportion)
 
-def bayes_classifier():
-    """TODO: """
-    pass
+    return X_train, X_test, Y_train, Y_test
 
-
-def split():
-    """TODO: """
-    pass
-
-
+"""we could maybe implement all of this inside the various functions"""
 def cross_validation():
     """TODO: """
     pass
 
+def decision_tree():
 
-def train():
-    """TODO: """
-    pass
-
-
-def validate():
-    """TODO: """
-    pass
+    return

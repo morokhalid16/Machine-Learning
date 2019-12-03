@@ -10,6 +10,7 @@ from sklearn.utils import shuffle
 import keras
 from keras.models import Sequential
 from keras.layers import Dense
+from sklearn.tree import DecisionTreeClassifier¶
 
 
 def load_data(path, flag=True): # Pastorino & Riera i Marin
@@ -35,7 +36,7 @@ def col_target_def(flag):
     return None
 
 
-def clean_data(data, flag):  # Rodriguez
+def clean_data(data, flag):  # Rodrigues
     if (flag == True):
         x = data.drop(['class'], axis=1)
         y = data['class']
@@ -157,10 +158,19 @@ def split(x, y,test_proportion): # Moro
     return X_train, X_test, Y_train, Y_test
 
 """we could maybe implement all of this inside the various functions"""
-def cross_validation():
-    """TODO: """
-    pass
 
-def decision_tree():
+"Takes as variables a classifier, the data and the number of cross-validation that is aimed"
+def cross_validation(clf,X_train, train_y,cv_number): #Rodrigues
+    cross_validation_values = cross_val_score(clf, X_train, train_y, cv=cv_number)
+    print("Cross-Validation Mean Value:",cross_validation_values.mean())
 
+    return cross_validation_values
+
+def decision_tree(X_train, train_y, X_test, test_y): #Rodrigues
+    clf = DecisionTreeClassifier()
+    clf = clf.fit(X_train,train_y)
+    pred_y = clf.predict(X_test)
+    print(confusion_matrix(test_y, y_pred))    
+    print("Accuracy:",accuracy_score(test_y, pred_y))
+    print(classification_report(test_y, y_pred))
     return

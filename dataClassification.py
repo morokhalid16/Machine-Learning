@@ -194,3 +194,53 @@ def decision_tree(X_train, train_y, X_test, test_y): # Gustavo Rodrigues
     print("Accuracy:",accuracy_score(test_y, pred_y))
     print(classification_report(test_y, y_pred))
     return
+
+def cleaning_data(data, dataset_name): #Rodrigues
+    if(dataset_name = 'kidney_desease'):
+        data.classification=data.classification.replace("ckd\t","ckd") 
+        data.drop("id",axis=1,inplace=True)
+        data.classification=[1 if each=="ckd" else 0 for each in data.classification]
+        non_numeric_atributes = ['rbc','pc','pcc','ba','htn','dm','cad','appet','pe','ane']
+        string_but_numeric = ['pcv','wc', 'rc']
+        for element in string_but_numeric:
+            #Substitute all NaNs to '0'
+            data[element]=['0' if type(each) is not type('string') else each for each in data[element]]
+
+            # Eliminate all \t from the beggining of the strings
+            data[element]=[each[1:] if each[0] == '\t' else each for each in data[element]]
+
+            # Substitute all '?' to '0'
+            data[element]=['0' if '?' in each else each for each in data[element]]
+
+            # Convert String values to numerical values
+            data[element] = pd.to_numeric(data[element])
+        
+        numeric_attributes = ['age','bp', 'sg', 'al', 'su', 'bgr', 'bu', 'sc', 'sod', 'pot', 'hemo', 'pcv', 'wc', 'rc']
+        #For all the numeric attributes replacing the nan's by the mean of the column
+        for attribute in numeric_attributes:
+            mean_value = data[attribute].mean()
+            data[attribute]=[mean_value if np.isnan(each) else each for each in data[attribute]]
+        
+        #Normalizing each numerical variable
+        for attribute in numeric_attributes:
+            min_value = data[attribute].min()
+            max_value = data[attribute].max()
+            amplitude = max_value - min_value
+            data[attribute]=[(each - min_value)/amplitude for each in data[attribute]]
+        
+        numeric_attributes_and_class = ['age','bp', 'sg', 'al', 'su', 'bgr', 'bu', 'sc', 'sod', 'pot', 'hemo', 'pcv', 'wc', 'rc','classification']
+
+        numerical_data = data[numeric_attributes_and_class]
+    
+        else if(dataset_name = 'annotation_banknotes'):
+            numeric_attributes = []
+            for attribute in numeric_attributes:
+                min_value = data[attribute].min()
+                max_value = data[attribute].max()
+                amplitude = max_value - min_value
+                data[attribute]=[(each - min_value)/amplitude for each in data[attribute]]
+        
+            numeric_attributes_and_class = []
+            numerical_data = data[numeric_attributes_and_class]
+
+        return numerical_data

@@ -166,7 +166,7 @@ def cross_validation(clf,X_train, train_y,cv_number): #Rodrigues
 
     return cross_validation_values
 
-def decision_tree(X_train, train_y, X_test, test_y): #Rodrigues
+def decision_tree(X_train, train_y, X_test, test_y): # Gustavo Rodrigues
     clf = DecisionTreeClassifier()
     clf = clf.fit(X_train,train_y)
     pred_y = clf.predict(X_test)

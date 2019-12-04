@@ -195,9 +195,9 @@ def decision_tree(X_train, train_y, X_test, test_y): # Gustavo Rodrigues
     print(classification_report(test_y, y_pred))
     return
 
-def cleaning_data(data, dataset_name): #Rodrigues
-    if(dataset_name = 'kidney_desease'):
-        data.classification=data.classification.replace("ckd\t","ckd") 
+def cleaning_function(data,flag): #Rodrigues
+    if(flag):
+        data.classification=data.classification.replace("ckd\t","ckd")
         data.drop("id",axis=1,inplace=True)
         data.classification=[1 if each=="ckd" else 0 for each in data.classification]
         non_numeric_atributes = ['rbc','pc','pcc','ba','htn','dm','cad','appet','pe','ane']
@@ -214,33 +214,40 @@ def cleaning_data(data, dataset_name): #Rodrigues
 
             # Convert String values to numerical values
             data[element] = pd.to_numeric(data[element])
-        
+
+        # Eliminate all \t from the beggining of the strings
+        data['dm']=['0' if type(each) is not type('string') else each for each in data['dm']]
+        data['dm']=[each[1:] if each[0] == '\t' else each for each in data['dm']]
+        data['dm']=[each[1:] if each[0] == ' ' else each for each in data['dm']]
+        most_occurrances = ['yes' if len(data.query('dm == "yes"')['dm']) > len(data.query('dm == "no"')['dm']) else 'no']
+
+        data['dm']=[most_occurrances[0] if each == '0' else each for each in data['dm']]
+
+        data['cad']=['0' if type(each) is not type('string') else each for each in data['cad']]
+        data['cad']=[each[1:] if each[0] == '\t' else each for each in data['cad']]
+        most_occurrances = ['yes' if len(data.query('cad == "yes"')['cad']) > len(data.query('cad == "no"')['cad']) else 'no']
+
+        data['cad']=[most_occurrances[0] if each == '0' else each for each in data['cad']]
+
         numeric_attributes = ['age','bp', 'sg', 'al', 'su', 'bgr', 'bu', 'sc', 'sod', 'pot', 'hemo', 'pcv', 'wc', 'rc']
+
         #For all the numeric attributes replacing the nan's by the mean of the column
         for attribute in numeric_attributes:
             mean_value = data[attribute].mean()
             data[attribute]=[mean_value if np.isnan(each) else each for each in data[attribute]]
-        
+
         #Normalizing each numerical variable
         for attribute in numeric_attributes:
             min_value = data[attribute].min()
             max_value = data[attribute].max()
             amplitude = max_value - min_value
             data[attribute]=[(each - min_value)/amplitude for each in data[attribute]]
-        
-        numeric_attributes_and_class = ['age','bp', 'sg', 'al', 'su', 'bgr', 'bu', 'sc', 'sod', 'pot', 'hemo', 'pcv', 'wc', 'rc','classification']
 
-        numerical_data = data[numeric_attributes_and_class]
-    
-        else if(dataset_name = 'annotation_banknotes'):
-            numeric_attributes = []
-            for attribute in numeric_attributes:
-                min_value = data[attribute].min()
-                max_value = data[attribute].max()
-                amplitude = max_value - min_value
-                data[attribute]=[(each - min_value)/amplitude for each in data[attribute]]
-        
-            numeric_attributes_and_class = []
-            numerical_data = data[numeric_attributes_and_class]
-
-        return numerical_data
+        numeric_attributes = ['age','bp', 'sg', 'al', 'su', 'bgr', 'bu', 'sc', 'sod', 'pot', 'hemo', 'pcv', 'wc', 'rc']
+        x_cleaned = data[numeric_attributes]
+        y_cleaned = data['classification']
+        return x_cleaned,y_cleaned
+    else:
+        x_cleaned = data.drop([data.columns[-1]], axis = 1)
+        y_cleaned = data[data.columns[-1]]
+        return x_cleaned,y_cleaned

@@ -105,7 +105,7 @@ def visualize_data(data, column):  # Pastorino & Riera i Marin
     return
 
 
-def pca(cleaned_data, n_components):  # Moro
+"""def pca(cleaned_data, n_components):  # Moro
 
     std_scale = preprocessing.StandardScaler().fit(cleaned_data)
     x_scaled = std_scale.transform(cleaned_data)
@@ -115,7 +115,26 @@ def pca(cleaned_data, n_components):  # Moro
     print(pca.explained_variance_ratio_)
     print(pca.explained_variance_ratio_.sum())
 
-    return dataset
+    return dataset """
+def  pca_explained_variance(cleaned_data): #plot a graph to choose the number of dimentions
+    pca=PCA().fit(cleaned_data)
+    #Plotting the Cumulative Summation of the Explained Variance
+    plt.figure()
+    plt.plot(np.cumsum(pca.explained_variance_ratio_))
+    plt.xlabel('Number of Components')
+    plt.ylabel('Variance (%)') #for each component
+    plt.title('Pulsar Dataset Explained Variance')
+    plt.show()
+ 
+    
+    
+    
+#Once we choose the number of dimentsions, we can perform a pca 
+def pca(cleaned_data,n_components):
+    pca = PCA(n_components)
+    dataset = pca.fit_transform(cleaned_data)
+    return dataset # returns a new dataset that is ready to be split in train and test data
+
 
 
 def svm(X_train, train_y, X_test, test_y):  # Pastorino & Riera i Marin
@@ -157,7 +176,8 @@ def split(x, y,test_proportion): # Moro
 
     return X_train, X_test, Y_train, Y_test
 
-"""we could maybe implement all of this inside the various functions"""
+
+
 
 "Takes as variables a classifier, the data and the number of cross-validation that is aimed"
 def cross_validation(clf,X_train, train_y,cv_number): #Rodrigues
